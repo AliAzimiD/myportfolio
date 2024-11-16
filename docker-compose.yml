@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database service
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+
+  # Django web application service
+  web:
+    # Build configuration for Django app
+    build:
+      context: ./django
+      dockerfile: Dockerfile
+    
+    # Command to run on container start
+    # 1. Wait for database
+    # 2. Make migrations
+    # 3. Run migrations
+    # 4. Collect static files
+    # 5. Create superuser if doesn't exist
+    # 6. Start development server
+    command: >
+      sh -c "python manage.py wait_for_db &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./django:/app
+    ports:
+      - "8001:8000"
+    depends_on:
+      - db
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      RAMZINEX_API_KEY: ${RAMZINEX_API_KEY}
+      RAMZINEX_API_SECRET: ${RAMZINEX_API_SECRET}
+      DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME}
+      DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL}
+      DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD}
+
+# Persistent volumes configuration
+volumes:
+  postgres_data:

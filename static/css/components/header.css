@@ -1,0 +1,28 @@
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--background-color);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nav-toggle {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .nav-toggle {
+    display: block;
+  }
+  
+  .mobile-nav {
+    display: none;
+  }
+  
+  .mobile-nav.active {
+    display: block;
+  }
+}

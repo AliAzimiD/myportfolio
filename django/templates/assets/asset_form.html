@@ -1,0 +1,66 @@
+<!--
+Asset form template for creating and editing assets.
+Features:
+- Responsive form layout
+- Input validation
+- Dynamic title based on create/edit mode
+-->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h3>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Asset</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_name" class="form-label">Name</label>
+                            <input type="text" name="name" id="id_name" class="form-control" 
+                                   value="{{ form.name.value|default:'' }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_asset_type" class="form-label">Asset Type</label>
+                            <select name="asset_type" id="id_asset_type" class="form-control" required>
+                                {% for value, label in form.fields.asset_type.choices %}
+                                    <option value="{{ value }}" {% if form.asset_type.value == value %}selected{% endif %}>
+                                        {{ label }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_quantity" class="form-label">Quantity</label>
+                            <input type="number" name="quantity" id="id_quantity" class="form-control" 
+                                   step="0.00000001" value="{{ form.quantity.value|default:'' }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_initial_price" class="form-label">Initial Price</label>
+                            <input type="number" name="initial_price" id="id_initial_price" class="form-control" 
+                                   step="0.01" value="{{ form.initial_price.value|default:'' }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_purchase_date" class="form-label">Purchase Date</label>
+                            <input type="date" name="purchase_date" id="id_purchase_date" class="form-control"
+                                   value="{{ form.purchase_date.value|date:'Y-m-d'|default:'' }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_exchange_name" class="form-label">Exchange Name</label>
+                            <input type="text" name="exchange_name" id="id_exchange_name" class="form-control"
+                                   value="{{ form.exchange_name.value|default:'' }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

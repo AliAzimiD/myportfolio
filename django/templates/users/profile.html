@@ -1,0 +1,49 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h3>User Profile</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'users:profile_update' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label>Username</label>
+                            <input type="text" class="form-control" value="{{ user.username }}" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label>Email</label>
+                            <input type="email" name="email" class="form-control" value="{{ user.email }}">
+                        </div>
+                        <div class="mb-3">
+                            <label>Phone Number</label>
+                            <input type="tel" name="phone_number" class="form-control" value="{{ user.userprofile.phone_number }}">
+                        </div>
+                        <div class="mb-3">
+                            <label>Preferred Currency</label>
+                            <select name="preferred_currency" class="form-control">
+                                <option value="USD" {% if user.userprofile.preferred_currency == 'USD' %}selected{% endif %}>USD</option>
+                                <option value="EUR" {% if user.userprofile.preferred_currency == 'EUR' %}selected{% endif %}>EUR</option>
+                                <option value="IRR" {% if user.userprofile.preferred_currency == 'IRR' %}selected{% endif %}>IRR</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" name="notification_enabled" class="form-check-input" 
+                                       {% if user.userprofile.notification_enabled %}checked{% endif %}>
+                                <label class="form-check-label">Enable Notifications</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
